@@ -1,5 +1,5 @@
 module SparseMatrix
 
-greet() = print("Hello World!")
+include("_SparseMatrix.jl")
 
-end # module
+end
