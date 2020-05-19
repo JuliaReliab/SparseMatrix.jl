@@ -1,8 +1,8 @@
 import Base #: size, length, show, +, -, *, /, adjoint, convert, getindex, iterate
-import LinearAlgebra
-import SparseArrays
+using LinearAlgebra
+using SparseArrays
 
-export SparseCSR, SparseCSC, SparseCOO, nnz, sprand, sprandn
+export SparseCSR, SparseCSC, SparseCOO, nnz, sprand, sprandn, spdiag
 
 abstract type AbstractSparseM{Tv, Ti} <: AbstractMatrix{Tv} end
 
@@ -888,7 +888,7 @@ struct Diag{Tv <: AbstractFloat, Ti <: Integer} <: AbstractArray{Tv,1}
     val::Vector{Tv}
 end
 
-function LinearAlgebra.diag(A::Matrix{Tv}) where {Tv}
+function spdiag(A::Matrix{Tv}) where {Tv}
     m, n = size(A)
     index = Vector{Int}(undef, min(m,n))
     z = 1
@@ -900,7 +900,7 @@ function LinearAlgebra.diag(A::Matrix{Tv}) where {Tv}
     Diag(index, val)
 end
 
-function LinearAlgebra.diag(A::SparseCSR{Tv,Ti}) where {Tv,Ti}
+function spdiag(A::SparseCSR{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
     index = zeros(Ti, min(m,n))
     val = reshape(A.val, length(A.val))
@@ -918,7 +918,7 @@ function LinearAlgebra.diag(A::SparseCSR{Tv,Ti}) where {Tv,Ti}
     Diag(index, val)
 end
 
-function LinearAlgebra.diag(A::SparseCSC{Tv,Ti}) where {Tv,Ti}
+function spdiag(A::SparseCSC{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
     index = zeros(Ti, min(m,n))
     val = reshape(A.val, length(A.val))
@@ -937,7 +937,7 @@ function LinearAlgebra.diag(A::SparseCSC{Tv,Ti}) where {Tv,Ti}
 end
 
 
-function LinearAlgebra.diag(A::SparseCOO{Tv,Ti}) where {Tv,Ti}
+function spdiag(A::SparseCOO{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
     index = zeros(Ti, min(m,n))
     val = reshape(A.val, length(A.val))
@@ -978,9 +978,9 @@ end
 #################### sprand
 
 function sprand(m, n, p::AbstractFloat, ::Type{T}) where {T}
-    T(SparseArrays.sprand(Float64, m, n, p))
+    T(SparseArrays.sprand(m, n, p))
 end
 
 function sprandn(m, n, p::AbstractFloat, ::Type{T}) where {T}
-    T(SparseArrays.sprandn(Float64, m, n, p))
+    T(SparseArrays.sprandn(m, n, p))
 end

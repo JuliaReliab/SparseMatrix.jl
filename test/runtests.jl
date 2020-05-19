@@ -166,10 +166,10 @@ end
         n = rand(1:20)
         p = rand()
         A = sprandn(m,n,p,Matrix)
-        d1 = diag(A)
-        d2 = convert(Vector{Float64}, diag(SparseCSR(A)))
-        d3 = convert(Vector{Float64}, diag(SparseCSC(A)))
-        d4 = convert(Vector{Float64}, diag(SparseCOO(A)))
+        d1 = spdiag(A)
+        d2 = convert(Vector{Float64}, spdiag(SparseCSR(A)))
+        d3 = convert(Vector{Float64}, spdiag(SparseCSC(A)))
+        d4 = convert(Vector{Float64}, spdiag(SparseCOO(A)))
         @test d1 ≈ d2 ≈ d3 ≈ d4
     end
 end
@@ -180,10 +180,10 @@ end
         n = rand(1:20)
         p = rand()
         A = sprandn(m,n,p,Matrix)
-        d1 = diag(A)
-        d2 = diag(SparseCSR(A))
-        d3 = diag(SparseCSC(A))
-        d4 = diag(SparseCOO(A))
+        d1 = spdiag(A)
+        d2 = spdiag(SparseCSR(A))
+        d3 = spdiag(SparseCSC(A))
+        d4 = spdiag(SparseCOO(A))
         for k = 1:length(d1)
             @test d1[k] ≈ d2[k] ≈ d3[k] ≈ d4[k]
         end
@@ -196,10 +196,10 @@ end
         n = rand(1:20)
         p = rand()
         A = sprandn(m,n,p,Matrix)
-        d1 = abs.(diag(A))
-        d2 = abs.(diag(SparseCSR(A)))
-        d3 = abs.(diag(SparseCSC(A)))
-        d4 = abs.(diag(SparseCOO(A)))
+        d1 = abs.(spdiag(A))
+        d2 = abs.(spdiag(SparseCSR(A)))
+        d3 = abs.(spdiag(SparseCSC(A)))
+        d4 = abs.(spdiag(SparseCOO(A)))
         @test d1 ≈ d2 ≈ d3 ≈ d4
     end
 end
@@ -210,10 +210,10 @@ end
         n = rand(1:20)
         p = rand()
         A = sprandn(m,n,p,Matrix)
-        d1 = maximum(diag(A))
-        d2 = maximum(diag(SparseCSR(A)))
-        d3 = maximum(diag(SparseCSC(A)))
-        d4 = maximum(diag(SparseCOO(A)))
+        d1 = maximum(spdiag(A))
+        d2 = maximum(spdiag(SparseCSR(A)))
+        d3 = maximum(spdiag(SparseCSC(A)))
+        d4 = maximum(spdiag(SparseCOO(A)))
         @test d1 ≈ d2 ≈ d3 ≈ d4
     end
 end
