@@ -217,3 +217,30 @@ end
         @test d1 ≈ d2 ≈ d3 ≈ d4
     end
 end
+
+@testset "copy" begin
+    for i = 1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A = sprandn(m,n,p,Matrix)
+        d1 = Matrix(copy(SparseCSR(A)))
+        d2 = Matrix(copy(SparseCSC(A)))
+        d3 = Matrix(copy(SparseCOO(A)))
+        @test A ≈ d1 ≈ d2 ≈ d3
+    end
+end
+
+@testset "zero" begin
+    for i = 1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A = sprandn(m,n,p,Matrix)
+        z = zero(A)
+        d1 = Matrix(zero(SparseCSR(A)))
+        d2 = Matrix(zero(SparseCSC(A)))
+        d3 = Matrix(zero(SparseCOO(A)))
+        @test z ≈ d1 ≈ d2 ≈ d3
+    end
+end
