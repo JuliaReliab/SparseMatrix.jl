@@ -244,3 +244,17 @@ end
         @test z ≈ d1 ≈ d2 ≈ d3
     end
 end
+
+@testset "linearlize" begin
+    for i = 1:1
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A = sprandn(m,n,p,SparseCSC)
+        B = copy(A)
+        for i = 1:length(B)
+            B[i] *= 100.0
+        end
+        @test A.val * 100.0 ≈ B.val
+    end
+end

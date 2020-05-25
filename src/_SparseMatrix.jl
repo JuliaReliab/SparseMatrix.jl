@@ -3,7 +3,9 @@ using LinearAlgebra
 using SparseArrays
 
 export AbstractSparseM
-export SparseCSR, SparseCSC, SparseCOO, nnz, sprand, sprandn, spdiag
+export SparseCSR, SparseCSC, SparseCOO
+export nnz, spdiag
+export sprand, sprandn
 
 abstract type AbstractSparseM{Tv, Ti} <: AbstractMatrix{Tv} end
 
@@ -145,9 +147,26 @@ function nnz(A::AbstractSparseM{Tv,Ti}) where {Tv,Ti}
     return length(A.val)
 end
 
+####
+
 function Base.length(A::AbstractSparseM{Tv,Ti}) where {Tv,Ti}
     return length(A.val)
 end
+
+function Base.getindex(A::AbstractSparseM{Tv,Ti}, i::Ti) where {Tv,Ti}
+    A.val[i]
+end
+
+function Base.setindex!(A::AbstractSparseM{Tv,Ti}, value::Tv, i::Ti) where {Tv,Ti}
+    A.val[i] = value
+end
+
+# function Base.iterate(A::AbstractSparseM{Tv,Ti}, i::Ti = 1) where {Tv,Ti}
+#     i == length(A)+1 && return nothing
+#     return (A.val[i], i+1)
+# end
+
+####
 
 function Base.copy(A::SparseCSR{Tv,Ti}) where {Tv,Ti}
     SparseCSR(A.m, A.n, copy(A.val), A.rowptr, A.colind)
@@ -161,6 +180,8 @@ function Base.copy(A::SparseCOO{Tv,Ti}) where {Tv,Ti}
     SparseCOO(A.m, A.n, copy(A.val), A.rowind, A.colind)
 end
 
+####
+
 function Base.similar(A::SparseCSR{Tv,Ti}) where {Tv,Ti}
     SparseCSR(A.m, A.n, similar(A.val), A.rowptr, A.colind)
 end
@@ -173,6 +194,8 @@ function Base.similar(A::SparseCOO{Tv,Ti}) where {Tv,Ti}
     SparseCOO(A.m, A.n, similar(A.val), A.rowind, A.colind)
 end
 
+####
+
 function Base.zero(A::SparseCSR{Tv,Ti}) where {Tv,Ti}
     SparseCSR(A.m, A.n, zero(A.val), A.rowptr, A.colind)
 end
@@ -184,11 +207,6 @@ end
 function Base.zero(A::SparseCOO{Tv,Ti}) where {Tv,Ti}
     SparseCOO(A.m, A.n, zero(A.val), A.rowind, A.colind)
 end
-
-# function Base.iterate(A::AbstractSparseM{Tv,Ti}, i::Ti = 1) where {Tv,Ti}
-#     i == length(A)+1 && return nothing
-#     return (A.val[i], i+1)
-# end
 
 function _tocsr(A::Matrix{Tv}, ::Type{Ti})::SparseCSR{Tv,Ti} where {Tv, Ti}
     m, n = size(A)
