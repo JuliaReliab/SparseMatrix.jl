@@ -246,13 +246,19 @@ end
 end
 
 @testset "linearlize" begin
-    for i = 1:1
+    for i = 1:100
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
         A = sprandn(m,n,p,SparseCSC)
         B = copy(A)
         for i = 1:length(B)
+            B[i] *= 100.0
+        end
+        @test A.val * 100.0 ≈ B.val
+        A = sprandn(m,n,p,SparseCSC)
+        B = copy(A)
+        for i = eachindex(B)
             B[i] *= 100.0
         end
         @test A.val * 100.0 ≈ B.val

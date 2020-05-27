@@ -1,6 +1,3 @@
-import Base #: size, length, show, +, -, *, /, adjoint, convert, getindex, iterate
-using LinearAlgebra
-using SparseArrays
 
 export AbstractSparseM
 export SparseCSR, SparseCSC, SparseCOO
@@ -75,10 +72,6 @@ end
 
 ### overload
 
-function Base.size(A::AbstractSparseM{Tv,Ti}) where {Tv,Ti}
-    return (A.m, A.n)
-end
-
 function Base.show(io::IO, A::SparseCSR{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
     println(io, string(m)*"x"*string(n)*" CSR-SparseMatrix")
@@ -148,6 +141,14 @@ function nnz(A::AbstractSparseM{Tv,Ti}) where {Tv,Ti}
 end
 
 ####
+
+function Base.size(A::AbstractSparseM{Tv,Ti}) where {Tv,Ti}
+    return (A.m, A.n)
+end
+
+function Base.eachindex(A::AbstractSparseM{Tv,Ti}) where {Tv,Ti}
+    return eachindex(A.val)
+end
 
 function Base.length(A::AbstractSparseM{Tv,Ti}) where {Tv,Ti}
     return length(A.val)
