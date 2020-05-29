@@ -265,7 +265,7 @@ end
     end
 end
 
-@testset "block" begin
+@testset "block 1" begin
     for i = 1:100
         m = rand(1:20)
         n = rand(1:20)
@@ -284,6 +284,52 @@ end
         y = SparseCOO(X) * [x1; x2]
 
         @test Matrix(SparseCOO(X)) == Matrix(SparseCSR(X)) == Matrix(SparseCSC(X))
-        @test y0 == y
+        @test y0 ≈ y
+    end
+end
+
+@testset "block 2" begin
+    for i = 1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A1 = sprandn(m,n,p,SparseCSR)
+        x1 = rand(n,1)
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A2 = sprandn(m,n,p,SparseCOO)
+        x2 = rand(n,1)
+
+        y0 = [A1 * x1; A2 * x2]
+
+        X = BlockCOO(2,2, [(1,1,A1), (2,2,A2)])
+        y = SparseCOO(X) * [x1; x2]
+
+        @test Matrix(SparseCOO(X)) == Matrix(SparseCSR(X)) == Matrix(SparseCSC(X))
+        @test y0 ≈ y
+    end
+end
+
+@testset "block 3" begin
+    for i = 1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A1 = sprandn(m,n,p,Matrix)
+        x1 = rand(n,1)
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A2 = sprandn(m,n,p,SparseCSC)
+        x2 = rand(n,1)
+
+        y0 = [A1 * x1; A2 * x2]
+
+        X = BlockCOO(2,2, [(1,1,A1), (2,2,A2)])
+        y = SparseCOO(X) * [x1; x2]
+
+        @test Matrix(SparseCOO(X)) == Matrix(SparseCSR(X)) == Matrix(SparseCSC(X))
+        @test y0 ≈ y
     end
 end

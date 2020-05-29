@@ -43,15 +43,16 @@ function _tocoo(A::BlockCOO{Tv,Ti}) where {Tv,Ti}
     for z = 1:nnz(A)
         i = A.rowind[z]
         j = A.colind[z]
+        m, n = size(A.val[z])
         if bi[i] == Ti(0)
-            bi[i] = A.val[z].m
+            bi[i] = m
         else
-            @assert bi[i] == A.val[z].m
+            @assert bi[i] == m
         end
         if bj[j] == Ti(0)
-            bj[j] = A.val[z].n
+            bj[j] = n
         else
-            @assert bj[j] == A.val[z].n
+            @assert bj[j] == n
         end
     end
     @assert all(bi .!= Ti(0))
