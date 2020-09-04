@@ -2,6 +2,12 @@ export AbstractSparseM
 export SparseCSR, SparseCSC, SparseCOO
 export nnz
 
+import Base: iszero
+
+function iszero(x::Float64)
+    x ≈ 0.0
+end
+
 abstract type AbstractSparseM{Tv, Ti} <: AbstractMatrix{Tv} end
 
 struct SparseCSR{Tv,Ti} <: AbstractSparseM{Tv,Ti}
@@ -221,7 +227,7 @@ function _tocsr(A::Matrix{Tv}, ::Type{Ti})::SparseCSR{Tv,Ti} where {Tv, Ti}
     rowptr[1] = 1
     for i = 1:m
         for j = 1:n
-            if !(A[i,j] ≈ 0.0)
+            if !(iszero(A[i,j]))
                 push!(colind, j)
                 push!(val, A[i,j])
             end
@@ -264,7 +270,7 @@ function _tocsc(A::Matrix{Tv}, ::Type{Ti})::SparseCSC{Tv,Ti} where {Tv, Ti}
     colptr[1] = 1
     for j = 1:n
         for i = 1:m
-            if !(A[i,j] ≈ 0.0)
+            if !(iszero(A[i,j]))
                 push!(rowind, i)
                 push!(val, A[i,j])
             end
@@ -310,7 +316,7 @@ function _tocoo(A::Matrix{Tv}, ::Type{Ti})::SparseCOO{Tv,Ti} where {Tv, Ti}
     val = Vector{Tv}()
     for j = 1:n
         for i = 1:m
-            if !(A[i,j] ≈ 0.0)
+            if !(iszero(A[i,j]))
                 push!(rowind, i)
                 push!(colind, j)
                 push!(val, A[i,j])
