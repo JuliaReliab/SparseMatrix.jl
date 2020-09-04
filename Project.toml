@@ -1,7 +1,7 @@
 name = "SparseMatrix"
 uuid = "b2a93422-1445-416e-a290-5781b57493d3"
 authors = ["Hiroyuki Okamura"]
-version = "0.1.5"
+version = "0.1.6"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
