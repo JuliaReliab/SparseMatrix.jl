@@ -1,8 +1,8 @@
 export AbstractSparseM
 export SparseCSR, SparseCSC, SparseCOO
-export nnz
 
 import Base: iszero
+import SparseArrays: nnz
 
 function iszero(x::Float64)
     x ≈ 0.0

@@ -3,6 +3,20 @@ using LinearAlgebra
 using SparseArrays
 using Test
 
+@testset "nnz1" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A=Matrix(sprandn(m,n,p))
+        x1=sparse(A)
+        x2=SparseCSR(A)
+        x3=SparseCSC(A)
+        x4=SparseCOO(A)
+        @test nnz(x1) == nnz(x2) == nnz(x3) == nnz(x4)
+    end
+end
+
 @testset "multiple1" begin
     for i=1:100
         m = rand(1:20)
