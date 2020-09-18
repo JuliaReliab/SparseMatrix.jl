@@ -34,6 +34,7 @@ end
 SparseCSR(A::BlockCOO{Tv,Ti}) where {Tv,Ti} = _tocsr(_tocoo(A))
 SparseCSC(A::BlockCOO{Tv,Ti}) where {Tv,Ti} = _tocsc(_tocoo(A))
 SparseCOO(A::BlockCOO{Tv,Ti}) where {Tv,Ti} = _tocoo(A)
+SparseArrays.sparse(A::BlockCOO{Tv,Ti}) where {Tv,Ti} = SparseArrays.sparse(_tocoo(A))
 
 function _tocoo(A::BlockCOO{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)

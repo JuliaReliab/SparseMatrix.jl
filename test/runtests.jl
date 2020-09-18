@@ -320,7 +320,7 @@ end
         X = BlockCOO(2,2, [(1,1,A1), (2,2,A2)])
         y = SparseCOO(X) * [x1; x2]
 
-        @test Matrix(SparseCOO(X)) == Matrix(SparseCSR(X)) == Matrix(SparseCSC(X))
+        @test Matrix(SparseCOO(X)) == Matrix(SparseCSR(X)) == Matrix(SparseCSC(X)) == Matrix(sparse(X))
         @test y0 ≈ y
     end
 end
@@ -343,7 +343,7 @@ end
         X = BlockCOO(2,2, [(1,1,A1), (2,2,A2)])
         y = SparseCOO(X) * [x1; x2]
 
-        @test Matrix(SparseCOO(X)) == Matrix(SparseCSR(X)) == Matrix(SparseCSC(X))
+        @test Matrix(SparseCOO(X)) == Matrix(SparseCSR(X)) == Matrix(SparseCSC(X)) == Matrix(sparse(X))
         @test y0 ≈ y
     end
 end
@@ -366,7 +366,7 @@ end
         X = BlockCOO(2,2, [(1,1,A1), (2,2,A2)])
         y = SparseCOO(X) * [x1; x2]
 
-        @test Matrix(SparseCOO(X)) == Matrix(SparseCSR(X)) == Matrix(SparseCSC(X))
+        @test Matrix(SparseCOO(X)) == Matrix(SparseCSR(X)) == Matrix(SparseCSC(X)) == Matrix(sparse(X))
         @test y0 ≈ y
     end
 end
