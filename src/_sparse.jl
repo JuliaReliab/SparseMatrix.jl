@@ -38,19 +38,19 @@ SparseCSR(A::Matrix{Tv}) where {Tv} = _tocsr(A, Int)
 SparseCSR(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = copy(A)
 SparseCSR(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = _tocsr(_tocoo(A))
 SparseCSR(A::SparseCOO{Tv,Ti}) where {Tv,Ti} = _tocsr(A)
-SparseCSR(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocsr(_tocoo(_tocsc(A)))
+SparseCSR(A::SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocsr(_tocoo(_tocsc(A)))
 
 SparseCSC(A::Matrix{Tv}) where {Tv} = _tocsc(A, Int)
 SparseCSC(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = _tocsc(_tocoo(A))
 SparseCSC(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = copy(A)
 SparseCSC(A::SparseCOO{Tv,Ti}) where {Tv,Ti} = _tocsc(A)
-SparseCSC(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocsc(A)
+SparseCSC(A::SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocsc(A)
 
 SparseCOO(A::Matrix{Tv}) where {Tv} = _tocoo(A, Int)
 SparseCOO(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = _tocoo(A)
 SparseCOO(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = _tocoo(A)
 SparseCOO(A::SparseCOO{Tv,Ti}) where {Tv,Ti} = copy(A)
-SparseCOO(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocoo(_tocsc(A))
+SparseCOO(A::SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocoo(_tocsc(A))
 
 Matrix(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = _dense(A)
 Matrix(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = _dense(A)
@@ -305,7 +305,7 @@ function _tocsc(A::SparseCOO{Tv,Ti})::SparseCSC{Tv,Ti} where {Tv, Ti}
     SparseCSC(m, n, val, colptr, rowind)
 end
 
-function _tocsc(A::SparseArrays.SparseMatrixCSC{Tv,Ti})::SparseCSC{Tv,Ti} where {Tv, Ti}
+function _tocsc(A::SparseMatrixCSC{Tv,Ti})::SparseCSC{Tv,Ti} where {Tv, Ti}
     SparseCSC(A.m, A.n, copy(A.nzval), copy(A.colptr), copy(A.rowval))
 end
 

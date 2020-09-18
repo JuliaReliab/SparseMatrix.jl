@@ -19,6 +19,24 @@ function spdiag(A::Matrix{Tv}) where {Tv}
     Diag(index, val)
 end
 
+function spdiag(A::SparseMatrixCSC{Tv,Ti}) where {Tv,Ti}
+    m, n = size(A)
+    index = zeros(Ti, min(m,n))
+    val = reshape(A.nzval, length(A.nzval))
+    for j = 1:min(m,n)
+        for z = A.colptr[j]:A.colptr[j+1]-1
+            i = A.rowval[z]
+            if i == j
+                index[i] = z
+                break
+            elseif i > j
+                break
+            end
+        end
+    end
+    Diag(index, val)
+end
+
 function spdiag(A::SparseCSR{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
     index = zeros(Ti, min(m,n))

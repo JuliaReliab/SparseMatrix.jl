@@ -1,5 +1,6 @@
 using SparseMatrix
 using LinearAlgebra
+using SparseArrays
 using Test
 
 @testset "multiple1" begin
@@ -7,7 +8,7 @@ using Test
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A=sprandn(m,n,p,Matrix)
+        A=Matrix(sprandn(m,n,p))
         x=randn(n)
         C1 = A * x
         C2 = SparseCSR(A) * x
@@ -22,7 +23,7 @@ end
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A=sprandn(n,m,p,Matrix)
+        A=Matrix(sprandn(n,m,p))
         x=randn(n)
         C1 = A' * x
         C2 = SparseCSR(A)' * x
@@ -38,7 +39,7 @@ end
         n = rand(1:20)
         k = rand(1:20)
         p = rand()
-        A=sprandn(m,k,p,Matrix)
+        A=Matrix(sprandn(m,k,p))
         B=randn(k,n)
         C1 = A * B
         C2 = SparseCSR(A) * B
@@ -54,7 +55,7 @@ end
         n = rand(1:20)
         k = rand(1:20)
         p = rand()
-        A=sprandn(k,m,p,Matrix)
+        A=Matrix(sprandn(k,m,p))
         B=randn(k,n)
         C1 = A' * B
         C2 = SparseCSR(A)' * B
@@ -70,7 +71,7 @@ end
         n = rand(1:20)
         k = rand(1:20)
         p = rand()
-        A=sprandn(m,k,p,Matrix)
+        A=Matrix(sprandn(m,k,p))
         B=randn(n,k)
         C1 = A * B'
         C2 = SparseCSR(A) * B'
@@ -86,7 +87,7 @@ end
         n = rand(1:20)
         k = rand(1:20)
         p = rand()
-        A=sprandn(k,m,p,Matrix)
+        A=Matrix(sprandn(k,m,p))
         B=randn(n,k)
         C1 = A' * B'
         C2 = SparseCSR(A)' * B'
@@ -103,7 +104,7 @@ end
         k = rand(1:20)
         p = rand()
         A=randn(m,k)
-        B=sprandn(k,n,p,Matrix)
+        B=Matrix(sprandn(k,n,p))
         C1 = A * B
         C2 = A * SparseCSR(B)
         C3 = A * SparseCSC(B)
@@ -119,7 +120,7 @@ end
         k = rand(1:20)
         p = rand()
         A=randn(k,m)
-        B=sprandn(k,n,p,Matrix)
+        B=Matrix(sprandn(k,n,p))
         C1 = A' * B
         C2 = A' * SparseCSR(B)
         C3 = A' * SparseCSC(B)
@@ -135,7 +136,7 @@ end
         k = rand(1:20)
         p = rand()
         A=randn(m,k)
-        B=sprandn(n,k,p,Matrix)
+        B=Matrix(sprandn(n,k,p))
         C1 = A * B'
         C2 = A * SparseCSR(B)'
         C3 = A * SparseCSC(B)'
@@ -151,7 +152,7 @@ end
         k = rand(1:20)
         p = rand()
         A=randn(k,m)
-        B=sprandn(n,k,p,Matrix)
+        B=Matrix(sprandn(n,k,p))
         C1 = A' * B'
         C2 = A' * SparseCSR(B)'
         C3 = A' * SparseCSC(B)'
@@ -165,7 +166,7 @@ end
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A = sprandn(m,n,p,Matrix)
+        A = Matrix(sprandn(m,n,p))
         d1 = spdiag(A)
         d2 = convert(Vector{Float64}, spdiag(SparseCSR(A)))
         d3 = convert(Vector{Float64}, spdiag(SparseCSC(A)))
@@ -179,7 +180,7 @@ end
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A = sprandn(m,n,p,Matrix)
+        A = Matrix(sprandn(m,n,p))
         d1 = spdiag(A)
         d2 = spdiag(SparseCSR(A))
         d3 = spdiag(SparseCSC(A))
@@ -195,7 +196,7 @@ end
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A = sprandn(m,n,p,Matrix)
+        A = Matrix(sprandn(m,n,p))
         d1 = abs.(spdiag(A))
         d2 = abs.(spdiag(SparseCSR(A)))
         d3 = abs.(spdiag(SparseCSC(A)))
@@ -209,7 +210,7 @@ end
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A = sprandn(m,n,p,Matrix)
+        A = Matrix(sprandn(m,n,p))
         d1 = maximum(spdiag(A))
         d2 = maximum(spdiag(SparseCSR(A)))
         d3 = maximum(spdiag(SparseCSC(A)))
@@ -223,7 +224,7 @@ end
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A = sprandn(m,n,p,Matrix)
+        A = Matrix(sprandn(m,n,p))
         d1 = Matrix(copy(SparseCSR(A)))
         d2 = Matrix(copy(SparseCSC(A)))
         d3 = Matrix(copy(SparseCOO(A)))
@@ -236,7 +237,7 @@ end
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A = sprandn(m,n,p,Matrix)
+        A = Matrix(sprandn(m,n,p))
         z = zero(A)
         d1 = Matrix(zero(SparseCSR(A)))
         d2 = Matrix(zero(SparseCSC(A)))
@@ -250,13 +251,13 @@ end
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A = sprandn(m,n,p,SparseCSC)
+        A = SparseCSC(sprandn(m,n,p))
         B = copy(A)
         for i = 1:length(B)
             B[i] *= 100.0
         end
         @test A.val * 100.0 ≈ B.val
-        A = sprandn(m,n,p,SparseCSC)
+        A = SparseCSC(sprandn(m,n,p))
         B = copy(A)
         for i = eachindex(B)
             B[i] *= 100.0
@@ -270,12 +271,12 @@ end
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A1 = sprandn(m,n,p,SparseCSC)
+        A1 = SparseCSC(sprandn(m,n,p))
         x1 = rand(n,1)
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A2 = sprandn(m,n,p,SparseCSC)
+        A2 = SparseCSC(sprandn(m,n,p))
         x2 = rand(n,1)
 
         y0 = [A1 * x1; A2 * x2]
@@ -293,12 +294,12 @@ end
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A1 = sprandn(m,n,p,SparseCSR)
+        A1 = SparseCSR(sprandn(m,n,p))
         x1 = rand(n,1)
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A2 = sprandn(m,n,p,SparseCOO)
+        A2 = SparseCOO(sprandn(m,n,p))
         x2 = rand(n,1)
 
         y0 = [A1 * x1; A2 * x2]
@@ -316,12 +317,12 @@ end
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A1 = sprandn(m,n,p,Matrix)
+        A1 = Matrix(sprandn(m,n,p))
         x1 = rand(n,1)
         m = rand(1:20)
         n = rand(1:20)
         p = rand()
-        A2 = sprandn(m,n,p,SparseCSC)
+        A2 = SparseCSC(sprandn(m,n,p))
         x2 = rand(n,1)
 
         y0 = [A1 * x1; A2 * x2]
@@ -331,5 +332,25 @@ end
 
         @test Matrix(SparseCOO(X)) == Matrix(SparseCSR(X)) == Matrix(SparseCSC(X))
         @test y0 ≈ y
+    end
+end
+
+@testset "spdiag 1" begin
+    for ite = 1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A = Matrix(sprandn(m,n,p))
+        d0 = spdiag(A)
+        d1 = spdiag(SparseCSR(A))
+        d2 = spdiag(SparseCSC(A))
+        d3 = spdiag(SparseCOO(A))
+        d4 = spdiag(SparseMatrixCSC(A))
+        v0 = [d0.val[i] for i = d0.index if !iszero(d0.val[i])]
+        v1 = [d1.val[i] for i = d1.index if !iszero(i)]
+        v2 = [d2.val[i] for i = d2.index if !iszero(i)]
+        v3 = [d3.val[i] for i = d3.index if !iszero(i)]
+        v4 = [d4.val[i] for i = d4.index if !iszero(i)]
+        @test v0 == v1 == v2 == v3 == v4
     end
 end
