@@ -31,10 +31,25 @@ function BlockCOO(m::Ti, n::Ti, elem::AbstractArray{Tuple{Ti,Ti,Tv},1}) where {T
     BlockCOO(m, n, val, rowind, colind)
 end
 
+block(A::SparseCOO{<:AbstractMatrix{Tv},Ti}) where {Tv,Ti} = BlockCOO{Tv,Ti}(A.m, A.n, copy(A.val), copy(A.rowind), copy(A.colind))
+block(A::SparseCSR{<:AbstractMatrix{Tv},Ti}) where {Tv,Ti} = block(SparseCOO(A))
+block(A::SparseCSC{<:AbstractMatrix{Tv},Ti}) where {Tv,Ti} = block(SparseCOO(A))
+block(A::SparseArrays.SparseMatrixCSC{<:AbstractMatrix{Tv},Ti}) where {Tv,Ti} = block(SparseCOO(A))
+
 SparseCSR(A::BlockCOO{Tv,Ti}) where {Tv,Ti} = _tocsr(_tocoo(A))
 SparseCSC(A::BlockCOO{Tv,Ti}) where {Tv,Ti} = _tocsc(_tocoo(A))
 SparseCOO(A::BlockCOO{Tv,Ti}) where {Tv,Ti} = _tocoo(A)
 SparseArrays.sparse(A::BlockCOO{Tv,Ti}) where {Tv,Ti} = SparseArrays.sparse(_tocoo(A))
+
+function Base.show(io::IO, A::BlockCOO{Tv,Ti}) where {Tv,Ti}
+    m, n = size(A)
+    println(io, string(A.m)*"x"*string(A.n)*" COO-BlockMatrix")
+    for z = 1:SparseArrays.nnz(A)
+        i = A.rowind[z]
+        j = A.colind[z]
+        println(io, "($(i), $(j)) $(A.val[z])")
+    end
+end
 
 function _tocoo(A::BlockCOO{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
@@ -47,12 +62,12 @@ function _tocoo(A::BlockCOO{Tv,Ti}) where {Tv,Ti}
         if bi[i] == Ti(0)
             bi[i] = m
         else
-            @assert bi[i] == m
+            @assert bi[i] == m "assert error ($i, $j) ($m, $n)"
         end
         if bj[j] == Ti(0)
             bj[j] = n
         else
-            @assert bj[j] == n
+            @assert bj[j] == n "assert error ($i, $j) ($m, $n)"
         end
     end
     @assert all(bi .!= Ti(0))

@@ -390,3 +390,26 @@ end
         @test v0 == v1 == v2 == v3 == v4
     end
 end
+
+@testset "block 4" begin
+    for i = 1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A1 = Matrix(sprandn(m,n,p))
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A2 = SparseCSC(sprandn(m,n,p))
+        X = spzeros(AbstractMatrix{Float64}, 2, 2)
+        X[1,1] = A1
+        X[2,2] = A2
+        AA = Matrix(sparse(block(X)))
+        A1 = Matrix(A1)
+        A2 = Matrix(A2)
+        BB = zeros(size(A1) .+ size(A2))
+        BB[1:size(A1)[1],1:size(A1)[2]] = A1
+        BB[size(A1)[1]+1:end,size(A1)[2]+1:end] = A2
+        @test AA == BB
+    end
+end

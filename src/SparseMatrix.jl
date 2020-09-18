@@ -6,6 +6,7 @@ import SparseArrays #: SparseMatrixCSC, nnz
 export AbstractSparseM
 export SparseCSR, SparseCSC, SparseCOO, BlockCOO
 export spdiag
+export block
 
 include("_sparse.jl")
 include("_mul.jl")
