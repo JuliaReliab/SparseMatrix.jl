@@ -321,7 +321,7 @@ end
 function _mul(A::SparseCOO{Tv,Ti}, x::Vector{Tv})::Vector{Tv} where {Tv, Ti}
     m, n = size(A)
     y = zeros(m)
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         i = A.rowind[z]
         j = A.colind[z]
         y[i] += A.val[z] * x[j]
@@ -333,7 +333,7 @@ function _mul(At::Adjoint{SparseCOO{Tv,Ti}}, x::Vector{Tv})::Vector{Tv} where {T
     A = At.parent
     n, m = size(A)
     y = zeros(m)
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         j = A.rowind[z]
         i = A.colind[z]
         y[i] += A.val[z] * x[j]
@@ -347,7 +347,7 @@ function _mul(A::SparseCOO{Tv,Ti}, B::Matrix{Tv})::Matrix{Tv} where {Tv, Ti}
     m, k = size(A)
     k, n = size(B)
     C = zeros(m,n)
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         i = A.rowind[z]
         l = A.colind[z]
         for j = 1:n
@@ -362,7 +362,7 @@ function _mul(A::SparseCOO{Tv,Ti}, Bt::LinearAlgebra.Adjoint{Tv,Matrix{Tv}})::Ma
     m, k = size(A)
     n, k = size(B)
     C = zeros(m,n)
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         i = A.rowind[z]
         l = A.colind[z]
         for j = 1:n
@@ -377,7 +377,7 @@ function _mul(At::Adjoint{SparseCOO{Tv,Ti}}, B::Matrix{Tv})::Matrix{Tv} where {T
     k, m = size(A)
     k, n = size(B)
     C = zeros(m,n)
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         l = A.rowind[z]
         i = A.colind[z]
         for j = 1:n
@@ -393,7 +393,7 @@ function _mul(At::Adjoint{SparseCOO{Tv,Ti}}, Bt::LinearAlgebra.Adjoint{Tv,Matrix
     k, m = size(A)
     n, k = size(B)
     C = zeros(m,n)
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         l = A.rowind[z]
         i = A.colind[z]
         for j = 1:n
@@ -409,7 +409,7 @@ function _mul(B::Matrix{Tv}, A::SparseCOO{Tv,Ti})::Matrix{Tv} where {Tv, Ti}
     m, k = size(B)
     k, n = size(A)
     C = zeros(m,n)
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         l = A.rowind[z]
         j = A.colind[z]
         for i = 1:m
@@ -424,7 +424,7 @@ function _mul(Bt::LinearAlgebra.Adjoint{Tv,Matrix{Tv}}, A::SparseCOO{Tv,Ti})::Ma
     k, m = size(B)
     k, n = size(A)
     C = zeros(m,n)
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         l = A.rowind[z]
         j = A.colind[z]
         for i = 1:m
@@ -439,7 +439,7 @@ function _mul(B::Matrix{Tv}, At::Adjoint{SparseCOO{Tv,Ti}})::Matrix{Tv} where {T
     m, k = size(B)
     n, k = size(A)
     C = zeros(m,n)
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         j = A.rowind[z]
         l = A.colind[z]
         for i = 1:m
@@ -455,7 +455,7 @@ function _mul(Bt::LinearAlgebra.Adjoint{Tv,Matrix{Tv}}, At::Adjoint{SparseCOO{Tv
     k, m = size(B)
     n, k = size(A)
     C = zeros(m,n)
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         j = A.rowind[z]
         l = A.colind[z]
         for i = 1:m

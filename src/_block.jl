@@ -1,4 +1,3 @@
-export BlockCOO
 
 struct BlockCOO{Tv,Ti} <: AbstractSparseM{Tv,Ti}
     m::Ti
@@ -40,7 +39,7 @@ function _tocoo(A::BlockCOO{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
     bi = zeros(Ti, m)
     bj = zeros(Ti, n)
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         i = A.rowind[z]
         j = A.colind[z]
         m, n = size(A.val[z])
@@ -73,7 +72,7 @@ function _tocoo(A::BlockCOO{Tv,Ti}) where {Tv,Ti}
     val = Tv[]
     rowind = Ti[]
     colind = Ti[]
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         i = A.rowind[z]
         j = A.colind[z]
         coo = SparseCOO(A.val[z])

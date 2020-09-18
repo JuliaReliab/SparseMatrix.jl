@@ -1,4 +1,3 @@
-export spdiag
 
 #################### Diag
 
@@ -19,7 +18,7 @@ function spdiag(A::Matrix{Tv}) where {Tv}
     Diag(index, val)
 end
 
-function spdiag(A::SparseMatrixCSC{Tv,Ti}) where {Tv,Ti}
+function spdiag(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
     index = zeros(Ti, min(m,n))
     val = reshape(A.nzval, length(A.nzval))
@@ -78,7 +77,7 @@ function spdiag(A::SparseCOO{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
     index = zeros(Ti, min(m,n))
     val = reshape(A.val, length(A.val))
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         i = A.rowind[z]
         j = A.colind[z]
         if i == j

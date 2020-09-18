@@ -1,10 +1,5 @@
-export AbstractSparseM
-export SparseCSR, SparseCSC, SparseCOO
 
-import Base: iszero
-import SparseArrays: nnz
-
-function iszero(x::Float64)
+function Base.iszero(x::Float64)
     x ≈ 0.0
 end
 
@@ -38,23 +33,27 @@ SparseCSR(A::Matrix{Tv}) where {Tv} = _tocsr(A, Int)
 SparseCSR(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = copy(A)
 SparseCSR(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = _tocsr(_tocoo(A))
 SparseCSR(A::SparseCOO{Tv,Ti}) where {Tv,Ti} = _tocsr(A)
-SparseCSR(A::SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocsr(_tocoo(_tocsc(A)))
+SparseCSR(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocsr(_tocoo(_tocsc(A)))
 
 SparseCSC(A::Matrix{Tv}) where {Tv} = _tocsc(A, Int)
 SparseCSC(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = _tocsc(_tocoo(A))
 SparseCSC(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = copy(A)
 SparseCSC(A::SparseCOO{Tv,Ti}) where {Tv,Ti} = _tocsc(A)
-SparseCSC(A::SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocsc(A)
+SparseCSC(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocsc(A)
 
 SparseCOO(A::Matrix{Tv}) where {Tv} = _tocoo(A, Int)
 SparseCOO(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = _tocoo(A)
 SparseCOO(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = _tocoo(A)
 SparseCOO(A::SparseCOO{Tv,Ti}) where {Tv,Ti} = copy(A)
-SparseCOO(A::SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocoo(_tocsc(A))
+SparseCOO(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocoo(_tocsc(A))
 
 Matrix(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = _dense(A)
 Matrix(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = _dense(A)
 Matrix(A::SparseCOO{Tv,Ti}) where {Tv,Ti} = _dense(A)
+
+SparseArrays.sparse(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = SparseArrays.sparse(_tocsc(_tocoo(A)))
+SparseArrays.sparse(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = SparseArrays.SparseMatrixCSC{Tv,Ti}(A.m, A.n, copy(A.colptr), copy(A.rowind), copy(A.val))
+SparseArrays.sparse(A::SparseCOO{Tv,Ti}) where {Tv,Ti} = SparseArrays.sparse(_tocsc(A))
 
 function SparseCOO(m::Ti, n::Ti, elem::AbstractArray{Tuple{Ti,Ti,Tv},1}) where {Tv,Ti}
     rowind = Vector{Ti}()
@@ -107,7 +106,7 @@ end
 function Base.show(io::IO, A::SparseCOO{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
     println(io, string(A.m)*"x"*string(A.n)*" COO-SparseMatrix")
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         i = A.rowind[z]
         j = A.colind[z]
         println(io, "("*string(i)*","*string(j)*") "*string(A.val[z]))
@@ -139,14 +138,14 @@ end
 function Base.show(io::IO, ::MIME"text/plain", A::SparseCOO{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
     println(io, string(A.m)*"x"*string(A.n)*" COO-SparseMatrix")
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         i = A.rowind[z]
         j = A.colind[z]
         println(io, "("*string(i)*","*string(j)*") "*string(A.val[z]))
     end
 end
 
-function nnz(A::AbstractSparseM{Tv,Ti}) where {Tv,Ti}
+function SparseArrays.nnz(A::AbstractSparseM{Tv,Ti}) where {Tv,Ti}
     return length(A.val)
 end
 
@@ -305,7 +304,7 @@ function _tocsc(A::SparseCOO{Tv,Ti})::SparseCSC{Tv,Ti} where {Tv, Ti}
     SparseCSC(m, n, val, colptr, rowind)
 end
 
-function _tocsc(A::SparseMatrixCSC{Tv,Ti})::SparseCSC{Tv,Ti} where {Tv, Ti}
+function _tocsc(A::SparseArrays.SparseMatrixCSC{Tv,Ti})::SparseCSC{Tv,Ti} where {Tv, Ti}
     SparseCSC(A.m, A.n, copy(A.nzval), copy(A.colptr), copy(A.rowval))
 end
 
@@ -385,7 +384,7 @@ end
 function _dense(A::SparseCOO{Tv,Ti})::Matrix{Tv} where {Tv, Ti}
     m, n = size(A)
     M = zeros(m,n)
-    for z = 1:nnz(A)
+    for z = 1:SparseArrays.nnz(A)
         i = A.rowind[z]
         j = A.colind[z]
         M[i,j] = A.val[z]

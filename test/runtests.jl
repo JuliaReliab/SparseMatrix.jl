@@ -17,6 +17,28 @@ using Test
     end
 end
 
+@testset "tocsc1" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A=Matrix(sprandn(m,n,p))
+        x0 = sparse(A)
+        x1=SparseCSR(A)
+        x2=SparseCSC(A)
+        x3=SparseCOO(A)
+        y1=sparse(x1)
+        y2=sparse(x2)
+        y3=sparse(x3)
+        if nnz(x1) != 0
+            x1.val[1] = 0.0
+            x2.val[1] = 0.0
+            x3.val[1] = 0.0
+        end
+        @test x0 == y1 == y2 == y3
+    end
+end
+
 @testset "multiple1" begin
     for i=1:100
         m = rand(1:20)

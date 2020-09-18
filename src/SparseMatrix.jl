@@ -1,13 +1,15 @@
 module SparseMatrix
 
-import Base #: size, length, show, +, -, *, /, adjoint, convert, getindex, iterate
-using LinearAlgebra
-using SparseArrays: SparseMatrixCSC
+using LinearAlgebra #: Adjoint
+import SparseArrays #: SparseMatrixCSC, nnz
+
+export AbstractSparseM
+export SparseCSR, SparseCSC, SparseCOO, BlockCOO
+export spdiag
 
 include("_sparse.jl")
 include("_mul.jl")
 include("_spdiag.jl")
-
 include("_block.jl")
 
 end
