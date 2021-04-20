@@ -404,12 +404,14 @@ end
         X = spzeros(AbstractMatrix{Float64}, 2, 2)
         X[1,1] = A1
         X[2,2] = A2
-        AA = Matrix(sparse(block(X)))
-        A1 = Matrix(A1)
-        A2 = Matrix(A2)
-        BB = zeros(size(A1) .+ size(A2))
-        BB[1:size(A1)[1],1:size(A1)[2]] = A1
-        BB[size(A1)[1]+1:end,size(A1)[2]+1:end] = A2
-        @test AA == BB
+        if sum(A1 .!= 0) != 0 && SparseArrays.nnz(A2) != 0
+            AA = Matrix(sparse(block(X)))
+            A1 = Matrix(A1)
+            A2 = Matrix(A2)
+            BB = zeros(size(A1) .+ size(A2))
+            BB[1:size(A1)[1],1:size(A1)[2]] = A1
+            BB[size(A1)[1]+1:end,size(A1)[2]+1:end] = A2
+            @test AA == BB
+        end
     end
 end
