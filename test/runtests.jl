@@ -278,7 +278,8 @@ end
         d1 = Matrix(zero(SparseCSR(A)))
         d2 = Matrix(zero(SparseCSC(A)))
         d3 = Matrix(zero(SparseCOO(A)))
-        @test z ≈ d1 ≈ d2 ≈ d3
+        d4 = Matrix(zero(SparseArrays.SparseMatrixCSC(A)))
+        @test z ≈ d1 ≈ d2 ≈ d3 ≈ d4
     end
 end
 

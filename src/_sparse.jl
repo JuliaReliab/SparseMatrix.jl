@@ -218,6 +218,10 @@ function Base.zero(A::SparseCOO{Tv,Ti}) where {Tv,Ti}
     SparseCOO(A.m, A.n, zero(A.val), A.rowind, A.colind)
 end
 
+function Base.zero(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti}
+    SparseArrays.SparseMatrixCSC{Tv,Ti}(A.m, A.n, A.colptr, A.rowval, zero(A.nzval))
+end
+
 function _tocsr(A::Matrix{Tv}, ::Type{Ti})::SparseCSR{Tv,Ti} where {Tv, Ti}
     m, n = size(A)
     rowptr = Vector{Ti}(undef, m+1)
