@@ -416,3 +416,335 @@ end
         end
     end
 end
+
+@testset "gemvN" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A=Matrix(sprandn(m,n,p))
+        x=randn(n)
+        y=randn(m)
+        alpha = randn(1)[1]
+        beta = randn(1)[1]
+        z1 = alpha * A * x + beta * y
+        z2 = alpha * SparseCSR(A) * x + beta * y
+        z3 = alpha * SparseCSC(A) * x + beta * y
+        z4 = alpha * SparseCOO(A) * x + beta * y
+        z5 = alpha * sparse(A) * x + beta * y
+        C1 = gemv!('N', alpha, A, x, beta, copy(y))
+        C2 = gemv!('N', alpha, SparseCSR(A), x, beta, copy(y))
+        C3 = gemv!('N', alpha, SparseCSC(A), x, beta, copy(y))
+        C4 = gemv!('N', alpha, SparseCOO(A), x, beta, copy(y))
+        C5 = gemv!('N', alpha, sparse(A), x, beta, copy(y))
+        for x = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+            for y = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+                @test isapprox(x, y)
+            end
+        end
+    end
+end
+
+@testset "gemvT" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A=Matrix(sprandn(n,m,p))
+        x=randn(n)
+        y=randn(m)
+        alpha = randn(1)[1]
+        beta = randn(1)[1]
+        z1 = alpha * A' * x + beta * y
+        z2 = alpha * SparseCSR(A)' * x + beta * y
+        z3 = alpha * SparseCSC(A)' * x + beta * y
+        z4 = alpha * SparseCOO(A)' * x + beta * y
+        z5 = alpha * sparse(A)' * x + beta * y
+        C1 = gemv!('T', alpha, A, x, beta, copy(y))
+        C2 = gemv!('T', alpha, SparseCSR(A), x, beta, copy(y))
+        C3 = gemv!('T', alpha, SparseCSC(A), x, beta, copy(y))
+        C4 = gemv!('T', alpha, SparseCOO(A), x, beta, copy(y))
+        C5 = gemv!('T', alpha, sparse(A), x, beta, copy(y))
+        for x = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+            for y = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+                @test isapprox(x, y)
+            end
+        end
+    end
+end
+
+@testset "gemmNN1" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        k = rand(1:20)
+        p = rand()
+        A=Matrix(sprandn(m,k,p))
+        B=randn(k,n)
+        C=randn(m,n)
+        alpha = randn(1)[1]
+        beta = randn(1)[1]
+        z1 = alpha * A * B + beta * C
+        z2 = alpha * SparseCSR(A) * B + beta * C
+        z3 = alpha * SparseCSC(A) * B + beta * C
+        z4 = alpha * SparseCOO(A) * B + beta * C
+        z5 = alpha * sparse(A) * B + beta * C
+        C1 = gemm!('N', 'N', alpha, A, B, beta, copy(C))
+        C2 = gemm!('N', 'N', alpha, SparseCSR(A), B, beta, copy(C))
+        C3 = gemm!('N', 'N', alpha, SparseCSC(A), B, beta, copy(C))
+        C4 = gemm!('N', 'N', alpha, SparseCOO(A), B, beta, copy(C))
+        C5 = gemm!('N', 'N', alpha, sparse(A), B, beta, copy(C))
+        for x = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+            for y = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+                @test isapprox(x, y)
+            end
+        end
+    end
+end
+
+@testset "gemmNN2" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        k = rand(1:20)
+        p = rand()
+        B=randn(m,k)
+        A=Matrix(sprandn(k,n,p))
+        C=randn(m,n)
+        alpha = randn(1)[1]
+        beta = randn(1)[1]
+        z1 = alpha * B * A + beta * C
+        z2 = alpha * B * SparseCSR(A) + beta * C
+        z3 = alpha * B * SparseCSC(A) + beta * C
+        z4 = alpha * B * SparseCOO(A) + beta * C
+        z5 = alpha * B * sparse(A) + beta * C
+        C1 = gemm!('N', 'N', alpha, B, A, beta, copy(C))
+        C2 = gemm!('N', 'N', alpha, B, SparseCSR(A), beta, copy(C))
+        C3 = gemm!('N', 'N', alpha, B, SparseCSC(A), beta, copy(C))
+        C4 = gemm!('N', 'N', alpha, B, SparseCOO(A), beta, copy(C))
+        C5 = gemm!('N', 'N', alpha, B, sparse(A), beta, copy(C))
+        for x = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+            for y = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+                @test isapprox(x, y)
+            end
+        end
+    end
+end
+
+@testset "gemmNT1" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        k = rand(1:20)
+        p = rand()
+        A=Matrix(sprandn(m,k,p))
+        B=randn(n,k)
+        C=randn(m,n)
+        alpha = randn(1)[1]
+        beta = randn(1)[1]
+        z1 = alpha * A * B' + beta * C
+        z2 = alpha * SparseCSR(A) * B' + beta * C
+        z3 = alpha * SparseCSC(A) * B' + beta * C
+        z4 = alpha * SparseCOO(A) * B' + beta * C
+        z5 = alpha * sparse(A) * B' + beta * C
+        C1 = gemm!('N', 'T', alpha, A, B, beta, copy(C))
+        C2 = gemm!('N', 'T', alpha, SparseCSR(A), B, beta, copy(C))
+        C3 = gemm!('N', 'T', alpha, SparseCSC(A), B, beta, copy(C))
+        C4 = gemm!('N', 'T', alpha, SparseCOO(A), B, beta, copy(C))
+        C5 = gemm!('N', 'T', alpha, sparse(A), B, beta, copy(C))
+        for x = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+            for y = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+                @test isapprox(x, y)
+            end
+        end
+    end
+end
+
+@testset "gemmNT2" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        k = rand(1:20)
+        p = rand()
+        B=randn(m,k)
+        A=Matrix(sprandn(n,k,p))
+        C=randn(m,n)
+        alpha = randn(1)[1]
+        beta = randn(1)[1]
+        z1 = alpha * B * A' + beta * C
+        z2 = alpha * B * SparseCSR(A)' + beta * C
+        z3 = alpha * B * SparseCSC(A)' + beta * C
+        z4 = alpha * B * SparseCOO(A)' + beta * C
+        z5 = alpha * B * sparse(A)' + beta * C
+        C1 = gemm!('N', 'T', alpha, B, A, beta, copy(C))
+        C2 = gemm!('N', 'T', alpha, B, SparseCSR(A), beta, copy(C))
+        C3 = gemm!('N', 'T', alpha, B, SparseCSC(A), beta, copy(C))
+        C4 = gemm!('N', 'T', alpha, B, SparseCOO(A), beta, copy(C))
+        C5 = gemm!('N', 'T', alpha, B, sparse(A), beta, copy(C))
+        for x = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+            for y = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+                @test isapprox(x, y)
+            end
+        end
+    end
+end
+
+@testset "gemmTN1" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        k = rand(1:20)
+        p = rand()
+        A=Matrix(sprandn(k,m,p))
+        B=randn(k,n)
+        C=randn(m,n)
+        alpha = randn(1)[1]
+        beta = randn(1)[1]
+        z1 = alpha * A' * B + beta * C
+        z2 = alpha * SparseCSR(A)' * B + beta * C
+        z3 = alpha * SparseCSC(A)' * B + beta * C
+        z4 = alpha * SparseCOO(A)' * B + beta * C
+        z5 = alpha * sparse(A)' * B + beta * C
+        C1 = gemm!('T', 'N', alpha, A, B, beta, copy(C))
+        C2 = gemm!('T', 'N', alpha, SparseCSR(A), B, beta, copy(C))
+        C3 = gemm!('T', 'N', alpha, SparseCSC(A), B, beta, copy(C))
+        C4 = gemm!('T', 'N', alpha, SparseCOO(A), B, beta, copy(C))
+        C5 = gemm!('T', 'N', alpha, sparse(A), B, beta, copy(C))
+        for x = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+            for y = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+                @test isapprox(x, y)
+            end
+        end
+    end
+end
+
+@testset "gemmTN2" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        k = rand(1:20)
+        p = rand()
+        B=randn(k,m)
+        A=Matrix(sprandn(k,n,p))
+        C=randn(m,n)
+        alpha = randn(1)[1]
+        beta = randn(1)[1]
+        z1 = alpha * B' * A + beta * C
+        z2 = alpha * B' * SparseCSR(A) + beta * C
+        z3 = alpha * B' * SparseCSC(A) + beta * C
+        z4 = alpha * B' * SparseCOO(A) + beta * C
+        z5 = alpha * B' * sparse(A) + beta * C
+        C1 = gemm!('T', 'N', alpha, B, A, beta, copy(C))
+        C2 = gemm!('T', 'N', alpha, B, SparseCSR(A), beta, copy(C))
+        C3 = gemm!('T', 'N', alpha, B, SparseCSC(A), beta, copy(C))
+        C4 = gemm!('T', 'N', alpha, B, SparseCOO(A), beta, copy(C))
+        C5 = gemm!('T', 'N', alpha, B, sparse(A), beta, copy(C))
+        for x = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+            for y = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+                @test isapprox(x, y)
+            end
+        end
+    end
+end
+
+@testset "gemmTT1" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        k = rand(1:20)
+        p = rand()
+        A=Matrix(sprandn(k,m,p))
+        B=randn(n,k)
+        C=randn(m,n)
+        alpha = randn(1)[1]
+        beta = randn(1)[1]
+        z1 = alpha * A' * B' + beta * C
+        z2 = alpha * SparseCSR(A)' * B' + beta * C
+        z3 = alpha * SparseCSC(A)' * B' + beta * C
+        z4 = alpha * SparseCOO(A)' * B' + beta * C
+        z5 = alpha * sparse(A)' * B' + beta * C
+        C1 = gemm!('T', 'T', alpha, A, B, beta, copy(C))
+        C2 = gemm!('T', 'T', alpha, SparseCSR(A), B, beta, copy(C))
+        C3 = gemm!('T', 'T', alpha, SparseCSC(A), B, beta, copy(C))
+        C4 = gemm!('T', 'T', alpha, SparseCOO(A), B, beta, copy(C))
+        C5 = gemm!('T', 'T', alpha, sparse(A), B, beta, copy(C))
+        for x = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+            for y = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+                @test isapprox(x, y)
+            end
+        end
+    end
+end
+
+@testset "gemmTT2" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        k = rand(1:20)
+        p = rand()
+        B=randn(k,m)
+        A=Matrix(sprandn(n,k,p))
+        C=randn(m,n)
+        alpha = randn(1)[1]
+        beta = randn(1)[1]
+        z1 = alpha * B' * A' + beta * C
+        z2 = alpha * B' * SparseCSR(A)' + beta * C
+        z3 = alpha * B' * SparseCSC(A)' + beta * C
+        z4 = alpha * B' * SparseCOO(A)' + beta * C
+        z5 = alpha * B' * sparse(A)' + beta * C
+        C1 = gemm!('T', 'T', alpha, B, A, beta, copy(C))
+        C2 = gemm!('T', 'T', alpha, B, SparseCSR(A), beta, copy(C))
+        C3 = gemm!('T', 'T', alpha, B, SparseCSC(A), beta, copy(C))
+        C4 = gemm!('T', 'T', alpha, B, SparseCOO(A), beta, copy(C))
+        C5 = gemm!('T', 'T', alpha, B, sparse(A), beta, copy(C))
+        for x = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+            for y = [z1, z2, z3, z4, z5, C1, C2, C3, C4, C5]
+                @test isapprox(x, y)
+            end
+        end
+    end
+end
+
+@testset "spger" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A=Matrix(sprandn(m,n,p))
+        x=randn(m)
+        y=randn(n)
+        alpha = randn(1)[1]
+        beta = randn(1)[1]
+        C1 = spger!(alpha, x, y, beta, copy(A)) .* A
+        C2 = Matrix(spger!(alpha, x, y, beta, SparseCSR(A))) .* A
+        C3 = Matrix(spger!(alpha, x, y, beta, SparseCSR(A))) .* A
+        C4 = Matrix(spger!(alpha, x, y, beta, SparseCSR(A))) .* A
+        C5 = Matrix(spger!(alpha, x, y, beta, sparse(A))) .* A
+        for x = [C1, C2, C3, C4, C5]
+            for y = [C1, C2, C3, C4, C5]
+                @test isapprox(x,y)
+            end
+        end
+    end
+end
+
+@testset "axpy" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A=Matrix(sprandn(m,n,p))
+        B=copy(A) * 10.0
+        a= randn(1)[1]
+        C1 = a * A + B
+        C2 = Matrix(axpy!(a, SparseCSR(A), SparseCSR(B)))
+        C3 = Matrix(axpy!(a, SparseCSC(A), SparseCSC(B)))
+        C4 = Matrix(axpy!(a, SparseCOO(A), SparseCOO(B)))
+        C5 = Matrix(axpy!(a, sparse(A), sparse(B)))
+        for x = [C1, C2, C3, C4, C5]
+            for y = [C1, C2, C3, C4, C5]
+                @test isapprox(x,y)
+            end
+        end
+    end
+end
