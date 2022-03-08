@@ -717,8 +717,8 @@ end
         beta = randn(1)[1]
         C1 = spger!(alpha, x, y, beta, copy(A)) .* A
         C2 = Matrix(spger!(alpha, x, y, beta, SparseCSR(A))) .* A
-        C3 = Matrix(spger!(alpha, x, y, beta, SparseCSR(A))) .* A
-        C4 = Matrix(spger!(alpha, x, y, beta, SparseCSR(A))) .* A
+        C3 = Matrix(spger!(alpha, x, y, beta, SparseCSC(A))) .* A
+        C4 = Matrix(spger!(alpha, x, y, beta, SparseCOO(A))) .* A
         C5 = Matrix(spger!(alpha, x, y, beta, sparse(A))) .* A
         for x = [C1, C2, C3, C4, C5]
             for y = [C1, C2, C3, C4, C5]

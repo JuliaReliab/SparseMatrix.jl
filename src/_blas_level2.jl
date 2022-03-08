@@ -235,7 +235,7 @@ for Tv in [:Float64]
         end
 
         ## COO
-        @inbounds function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseCSC{$Tv,Ti}) where {Ti}
+        @inbounds function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseCOO{$Tv,Ti}) where {Ti}
             m, n = size(A)
             @. A.val *= beta
             for z = 1:SparseArrays.nnz(A)
