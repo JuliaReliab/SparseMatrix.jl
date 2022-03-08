@@ -8,7 +8,7 @@ for Tv in [:Float64]
     @eval begin
 
         ## SparseArrays.SparseMatrixCSC
-        function gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseArrays.SparseMatrixCSC{$Tv,Ti}, X::AbstractVector{$Tv},
+        @inbounds function gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseArrays.SparseMatrixCSC{$Tv,Ti}, X::AbstractVector{$Tv},
             beta::Union{$Tv,Bool}, Y::AbstractVector{$Tv}) where {Ti}
             if trans == 'N'
                 m, n = size(A)
@@ -36,7 +36,7 @@ for Tv in [:Float64]
         end
 
         ## CSR
-        function gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseCSR{$Tv,Ti}, X::AbstractVector{$Tv},
+        @inbounds function gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseCSR{$Tv,Ti}, X::AbstractVector{$Tv},
             beta::Union{$Tv,Bool}, Y::AbstractVector{$Tv}) where {Ti}
             if trans == 'N'
                 m, n = size(A)
@@ -64,7 +64,7 @@ for Tv in [:Float64]
         end
 
         ## CSC
-        function gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseCSC{$Tv,Ti}, X::AbstractVector{$Tv},
+        @inbounds function gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseCSC{$Tv,Ti}, X::AbstractVector{$Tv},
             beta::Union{$Tv,Bool}, Y::AbstractVector{$Tv}) where {Ti}
             if trans == 'N'
                 m, n = size(A)
@@ -92,7 +92,7 @@ for Tv in [:Float64]
         end
 
         ## COO
-        function gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseCOO{$Tv,Ti}, X::AbstractVector{$Tv},
+        @inbounds function gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseCOO{$Tv,Ti}, X::AbstractVector{$Tv},
             beta::Union{$Tv,Bool}, Y::AbstractVector{$Tv}) where {Ti}
             if trans == 'N'
                 m, n = size(A)
@@ -120,7 +120,7 @@ for Tv in [:Float64]
     end
 
     @eval begin
-        function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::Matrix{$Tv}) where {Ti}
+        @inbounds function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::Matrix{$Tv}) where {Ti}
             m, n = size(A)
             @. A *= beta
             for j = 1:n
@@ -132,7 +132,7 @@ for Tv in [:Float64]
         end
 
         ## SparseArrays.SparseMatrixCSC
-        function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseArrays.SparseMatrixCSC{$Tv,Ti}) where {Ti}
+        @inbounds function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseArrays.SparseMatrixCSC{$Tv,Ti}) where {Ti}
             m, n = size(A)
             @. A.nzval *= beta
             for j = 1:n
@@ -145,7 +145,7 @@ for Tv in [:Float64]
         end
 
         ## CSR
-        function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseCSR{$Tv,Ti}) where {Ti}
+        @inbounds function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseCSR{$Tv,Ti}) where {Ti}
             m, n = size(A)
             @. A.val *= beta
             for i = 1:m
@@ -158,7 +158,7 @@ for Tv in [:Float64]
         end
 
         ## CSC
-        function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseCSC{$Tv,Ti}) where {Ti}
+        @inbounds function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseCSC{$Tv,Ti}) where {Ti}
             m, n = size(A)
             @. A.val *= beta
             for j = 1:n
@@ -171,7 +171,7 @@ for Tv in [:Float64]
         end
 
         ## COO
-        function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseCSC{$Tv,Ti}) where {Ti}
+        @inbounds function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseCSC{$Tv,Ti}) where {Ti}
             m, n = size(A)
             @. A.val *= beta
             for z = 1:SparseArrays.nnz(A)
@@ -184,7 +184,7 @@ for Tv in [:Float64]
     end
 
     @eval begin
-        function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::Matrix{$Tv}) where {Ti}
+        @inbounds function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::Matrix{$Tv}) where {Ti}
             m, n = size(A)
             @. A *= beta
             for j = 1:n
@@ -196,7 +196,7 @@ for Tv in [:Float64]
         end
 
         ## SparseArrays.SparseMatrixCSC
-        function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseArrays.SparseMatrixCSC{$Tv,Ti}) where {Ti}
+        @inbounds function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseArrays.SparseMatrixCSC{$Tv,Ti}) where {Ti}
             m, n = size(A)
             @. A.nzval *= beta
             for j = 1:n
@@ -209,7 +209,7 @@ for Tv in [:Float64]
         end
 
         ## CSR
-        function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseCSR{$Tv,Ti}) where {Ti}
+        @inbounds function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseCSR{$Tv,Ti}) where {Ti}
             m, n = size(A)
             @. A.val *= beta
             for i = 1:m
@@ -222,7 +222,7 @@ for Tv in [:Float64]
         end
 
         ## CSC
-        function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseCSC{$Tv,Ti}) where {Ti}
+        @inbounds function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseCSC{$Tv,Ti}) where {Ti}
             m, n = size(A)
             @. A.val *= beta
             for j = 1:n
@@ -235,7 +235,7 @@ for Tv in [:Float64]
         end
 
         ## COO
-        function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseCSC{$Tv,Ti}) where {Ti}
+        @inbounds function spger!(alpha::Union{$Tv,Bool}, X::AbstractVector{$Tv}, Y::AbstractVector{$Tv}, beta::Union{$Tv,Bool}, A::SparseCSC{$Tv,Ti}) where {Ti}
             m, n = size(A)
             @. A.val *= beta
             for z = 1:SparseArrays.nnz(A)

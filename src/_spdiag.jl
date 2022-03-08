@@ -6,7 +6,7 @@ struct Diag{Tv <: AbstractFloat, Ti <: Integer} <: AbstractArray{Tv,1}
     val::Vector{Tv}
 end
 
-function spdiag(A::Matrix{Tv}) where {Tv}
+@inbounds function spdiag(A::Matrix{Tv}) where {Tv}
     m, n = size(A)
     index = Vector{Int}(undef, min(m,n))
     z = 1
@@ -18,7 +18,7 @@ function spdiag(A::Matrix{Tv}) where {Tv}
     Diag(index, val)
 end
 
-function spdiag(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti}
+@inbounds function spdiag(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
     index = zeros(Ti, min(m,n))
     val = reshape(A.nzval, length(A.nzval))
@@ -36,7 +36,7 @@ function spdiag(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti}
     Diag(index, val)
 end
 
-function spdiag(A::SparseCSR{Tv,Ti}) where {Tv,Ti}
+@inbounds function spdiag(A::SparseCSR{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
     index = zeros(Ti, min(m,n))
     val = reshape(A.val, length(A.val))
@@ -54,7 +54,7 @@ function spdiag(A::SparseCSR{Tv,Ti}) where {Tv,Ti}
     Diag(index, val)
 end
 
-function spdiag(A::SparseCSC{Tv,Ti}) where {Tv,Ti}
+@inbounds function spdiag(A::SparseCSC{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
     index = zeros(Ti, min(m,n))
     val = reshape(A.val, length(A.val))
@@ -73,7 +73,7 @@ function spdiag(A::SparseCSC{Tv,Ti}) where {Tv,Ti}
 end
 
 
-function spdiag(A::SparseCOO{Tv,Ti}) where {Tv,Ti}
+@inbounds function spdiag(A::SparseCOO{Tv,Ti}) where {Tv,Ti}
     m, n = size(A)
     index = zeros(Ti, min(m,n))
     val = reshape(A.val, length(A.val))
