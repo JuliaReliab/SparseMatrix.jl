@@ -108,5 +108,7 @@ function Base.setindex!(A::Diag{Tv,Ti}, value::Tv, i::Ti) where {Tv,Ti}
     z = A.index[i]
     if z != 0
         A.val[z] = value
+    else
+        @warn "Warning: There does not exist the index $i in the sparse matrix. Probably the diagonal element was 0."
     end
 end
