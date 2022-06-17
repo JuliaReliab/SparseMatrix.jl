@@ -22,7 +22,7 @@ for mat in (:SparseCSR, :SparseCSC, :SparseCOO)
         @eval begin
             (Base.:*)(x::Union{$elty,Bool}, A::$mat{$elty,Ti}) where {Ti} = LinearAlgebra.BLAS.scal!(x, copy(A))
             (Base.:*)(A::$mat{$elty,Ti}, x::Union{$elty,Bool}) where {Ti} = LinearAlgebra.BLAS.scal!(x, copy(A))
-            (Base.:/)(A::$mat{$elty,Ti}, x::$elty) where {Ti} = scal!(Base.one($elty)/x, copy(A))
+            (Base.:/)(A::$mat{$elty,Ti}, x::$elty) where {Ti} = LinearAlgebra.BLAS.scal!(Base.one($elty)/x, copy(A))
 
             (Base.:*)(x::Union{$elty,Bool}, At::Adjoint{$mat{$elty,Ti}}) where {Ti} = LinearAlgebra.BLAS.scal!(x, copy(At.parent))'
             (Base.:*)(At::Adjoint{$mat{$elty,Ti}}, x::Union{$elty,Bool}) where {Ti} = LinearAlgebra.BLAS.scal!(x, copy(At.parent))'
