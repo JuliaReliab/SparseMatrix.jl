@@ -1,5 +1,6 @@
 using SparseMatrix
 using LinearAlgebra
+using LinearAlgebra.BLAS
 using SparseArrays
 using Test
 

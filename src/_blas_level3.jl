@@ -10,14 +10,12 @@
 
 # blas level 3
 
-import LinearAlgebra.BLAS: gemm!
-
 for Tv in [:Float64]
     @eval begin
 
         ### CSR
 
-        @inbounds function gemm!(transA::AbstractChar, transB::AbstractChar,
+        @inbounds function LinearAlgebra.BLAS.gemm!(transA::AbstractChar, transB::AbstractChar,
             alpha::Union{$Tv,Bool}, A::SparseCSR{$Tv,Ti}, B::Matrix{$Tv},
             beta::Union{$Tv,Bool}, C::Matrix{$Tv}) where {Ti}
             if transA == 'N' && transB == 'N'
@@ -79,7 +77,7 @@ for Tv in [:Float64]
 
         ### CSR2
 
-        @inbounds function gemm!(transA::AbstractChar, transB::AbstractChar,
+        @inbounds function LinearAlgebra.BLAS.gemm!(transA::AbstractChar, transB::AbstractChar,
             alpha::Union{$Tv,Bool}, B::Matrix{$Tv}, A::SparseCSR{$Tv,Ti},
             beta::Union{$Tv,Bool}, C::Matrix{$Tv}) where {Ti}
             if transA == 'N' && transB == 'N'
@@ -141,7 +139,7 @@ for Tv in [:Float64]
 
         ### CSC
 
-        @inbounds function gemm!(transA::AbstractChar, transB::AbstractChar,
+        @inbounds function LinearAlgebra.BLAS.gemm!(transA::AbstractChar, transB::AbstractChar,
             alpha::Union{$Tv,Bool}, A::SparseCSC{$Tv,Ti}, B::Matrix{$Tv},
             beta::Union{$Tv,Bool}, C::Matrix{$Tv}) where {Ti}
             if transA == 'N' && transB == 'N'
@@ -203,7 +201,7 @@ for Tv in [:Float64]
 
         ### CSC2
 
-        @inbounds function gemm!(transA::AbstractChar, transB::AbstractChar,
+        @inbounds function LinearAlgebra.BLAS.gemm!(transA::AbstractChar, transB::AbstractChar,
             alpha::Union{$Tv,Bool}, B::Matrix{$Tv}, A::SparseCSC{$Tv,Ti},
             beta::Union{$Tv,Bool}, C::Matrix{$Tv}) where {Ti}
             if transA == 'N' && transB == 'N'
@@ -265,7 +263,7 @@ for Tv in [:Float64]
 
         ### COO
 
-        @inbounds function gemm!(transA::AbstractChar, transB::AbstractChar,
+        @inbounds function LinearAlgebra.BLAS.gemm!(transA::AbstractChar, transB::AbstractChar,
             alpha::Union{$Tv,Bool}, A::SparseCOO{$Tv,Ti}, B::Matrix{$Tv},
             beta::Union{$Tv,Bool}, C::Matrix{$Tv}) where {Ti}
             if transA == 'N' && transB == 'N'
@@ -323,7 +321,7 @@ for Tv in [:Float64]
 
         ### COO2
 
-        @inbounds function gemm!(transA::AbstractChar, transB::AbstractChar,
+        @inbounds function LinearAlgebra.BLAS.gemm!(transA::AbstractChar, transB::AbstractChar,
             alpha::Union{$Tv,Bool}, B::Matrix{$Tv}, A::SparseCOO{$Tv,Ti},
             beta::Union{$Tv,Bool}, C::Matrix{$Tv}) where {Ti}
             if transA == 'N' && transB == 'N'
@@ -381,7 +379,7 @@ for Tv in [:Float64]
 
         ### SparseArrays.SparseMatrixCSC{Tv,Ti}
 
-        @inbounds function gemm!(transA::AbstractChar, transB::AbstractChar,
+        @inbounds function LinearAlgebra.BLAS.gemm!(transA::AbstractChar, transB::AbstractChar,
             alpha::Union{$Tv,Bool}, A::SparseArrays.SparseMatrixCSC{$Tv,Ti}, B::Matrix{$Tv},
             beta::Union{$Tv,Bool}, C::Matrix{$Tv}) where {Ti}
             if transA == 'N' && transB == 'N'
@@ -443,7 +441,7 @@ for Tv in [:Float64]
 
         ### SparseArrays.SparseMatrixCSC{$Tv,Ti}2
 
-        @inbounds function gemm!(transA::AbstractChar, transB::AbstractChar,
+        @inbounds function LinearAlgebra.BLAS.gemm!(transA::AbstractChar, transB::AbstractChar,
             alpha::Union{$Tv,Bool}, B::Matrix{$Tv}, A::SparseArrays.SparseMatrixCSC{$Tv,Ti},
             beta::Union{$Tv,Bool}, C::Matrix{$Tv}) where {Ti}
             if transA == 'N' && transB == 'N'

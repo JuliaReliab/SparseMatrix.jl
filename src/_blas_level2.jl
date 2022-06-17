@@ -2,13 +2,11 @@
 
 # blas level 2
 
-import LinearAlgebra.BLAS: gemv!
-
 for Tv in [:Float64]
     @eval begin
 
         ## SparseArrays.SparseMatrixCSC
-        @inbounds function gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseArrays.SparseMatrixCSC{$Tv,Ti}, X::AbstractVector{$Tv},
+        @inbounds function LinearAlgebra.BLAS.gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseArrays.SparseMatrixCSC{$Tv,Ti}, X::AbstractVector{$Tv},
             beta::Union{$Tv,Bool}, Y::AbstractVector{$Tv}) where {Ti}
             if trans == 'N'
                 m, n = size(A)
@@ -36,7 +34,7 @@ for Tv in [:Float64]
         end
 
         ## CSR
-        @inbounds function gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseCSR{$Tv,Ti}, X::AbstractVector{$Tv},
+        @inbounds function LinearAlgebra.BLAS.gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseCSR{$Tv,Ti}, X::AbstractVector{$Tv},
             beta::Union{$Tv,Bool}, Y::AbstractVector{$Tv}) where {Ti}
             if trans == 'N'
                 m, n = size(A)
@@ -64,7 +62,7 @@ for Tv in [:Float64]
         end
 
         ## CSC
-        @inbounds function gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseCSC{$Tv,Ti}, X::AbstractVector{$Tv},
+        @inbounds function LinearAlgebra.BLAS.gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseCSC{$Tv,Ti}, X::AbstractVector{$Tv},
             beta::Union{$Tv,Bool}, Y::AbstractVector{$Tv}) where {Ti}
             if trans == 'N'
                 m, n = size(A)
@@ -92,7 +90,7 @@ for Tv in [:Float64]
         end
 
         ## COO
-        @inbounds function gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseCOO{$Tv,Ti}, X::AbstractVector{$Tv},
+        @inbounds function LinearAlgebra.BLAS.gemv!(trans::AbstractChar, alpha::Union{$Tv,Bool}, A::SparseCOO{$Tv,Ti}, X::AbstractVector{$Tv},
             beta::Union{$Tv,Bool}, Y::AbstractVector{$Tv}) where {Ti}
             if trans == 'N'
                 m, n = size(A)

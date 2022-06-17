@@ -1,6 +1,7 @@
 module SparseMatrix
 
 import LinearAlgebra #: Adjoint
+import LinearAlgebra.BLAS
 import SparseArrays #: SparseMatrixCSC, nnz
 
 export AbstractSparseM
