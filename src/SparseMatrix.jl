@@ -8,7 +8,7 @@ export AbstractSparseM
 export SparseCSR, SparseCSC, SparseCOO, BlockCOO
 export spdiag
 export block
-export fill!, scal!, axpy!, gemv!, spger!, gemm!
+export fill!, spger!
 
 include("_sparse.jl")
 include("_blas_level1.jl")
