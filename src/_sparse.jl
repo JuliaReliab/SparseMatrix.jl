@@ -1,10 +1,39 @@
+import LinearAlgebra
+import SparseArrays
+
+export AbstractSparseM
+export SparseCSR, SparseCSC, SparseCOO, BlockCOO
 
 function Base.iszero(x::Float64)
     x ≈ 0.0
 end
 
-abstract type AbstractSparseM{Tv, Ti} <: AbstractMatrix{Tv} end
+"""
+    AbstractSparseM{Tv,Ti} <: AbstractMatrix{Tv}
 
+Abstract tyoe for sparse matrix.
+
+### Notes
+
+Every concrete `AbstractSparseM` must have the following fields:
+- `m`: the number of rows whose type is Ti
+- `n`: the number of columns whose type is Ti
+- `val`: a vector of non-zero elements whose type is Tv
+"""
+abstract type AbstractSparseM{Tv,Ti} <: AbstractMatrix{Tv} end
+
+"""
+    SparseCSR{Tv,Ti} <: AbstractSparseM{Tv,Ti}
+
+Type that represents a sparse matrix with CSR format.
+
+### Fileds
+- `m::Ti`: the number of rows whose type is Ti
+- `n::Ti`: the number of columns whose type is Ti
+- `val::Vector{Tv}`: a vector of non-zero elements whose type is Tv
+- `rowptr::Vector{Ti}`: a vector to indicate a position of `val` to start each row.
+- `colind::Vector{Ti}`: a vector indicating the column index for the corredponding element of `val`.
+"""
 struct SparseCSR{Tv,Ti} <: AbstractSparseM{Tv,Ti}
     m::Ti
     n::Ti
@@ -13,6 +42,18 @@ struct SparseCSR{Tv,Ti} <: AbstractSparseM{Tv,Ti}
     colind::Vector{Ti}
 end
 
+"""
+    SparseCSC{Tv,Ti} <: AbstractSparseM{Tv,Ti}
+
+Type that represents a sparse matrix with CSC format.
+
+### Fileds
+- `m::Ti`: the number of rows whose type is Ti
+- `n::Ti`: the number of columns whose type is Ti
+- `val::Vector{Tv}`: a vector of non-zero elements whose type is Tv
+- `colptr::Vector{Ti}`: a vector to indicate a position of `val` to start each column.
+- `rowind::Vector{Ti}`: a vector indicating the row index for the corredponding element of `val`.
+"""
 struct SparseCSC{Tv,Ti} <: AbstractSparseM{Tv,Ti}
     m::Ti
     n::Ti
@@ -21,6 +62,18 @@ struct SparseCSC{Tv,Ti} <: AbstractSparseM{Tv,Ti}
     rowind::Vector{Ti}
 end
 
+"""
+    SparseCOO{Tv,Ti} <: AbstractSparseM{Tv,Ti}
+
+Type that represents a sparse matrix with COO format.
+
+### Fileds
+- `m::Ti`: the number of rows whose type is Ti
+- `n::Ti`: the number of columns whose type is Ti
+- `val::Vector{Tv}`: a vector of non-zero elements whose type is Tv
+- `rowind::Vector{Ti}`: a vector indicating the row index for the corredponding element of `val`.
+- `colind::Vector{Ti}`: a vector indicating the column index for the corredponding element of `val`.
+"""
 struct SparseCOO{Tv,Ti} <: AbstractSparseM{Tv,Ti}
     m::Ti
     n::Ti
@@ -29,27 +82,51 @@ struct SparseCOO{Tv,Ti} <: AbstractSparseM{Tv,Ti}
     colind::Vector{Ti}
 end
 
+"""
+    SparseCSR(A)
+
+Create a sparse matrix with CSR format from the matrix `A`.
+The matrix `A` is allowed to be Matrix, SparseArrays.SparseMatrixCSC, SparseCSR, SparseCSC, SparseCOO and BlockCOO.
+"""
 SparseCSR(A::Matrix{Tv}) where {Tv} = _tocsr(A, Int)
 SparseCSR(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = copy(A)
 SparseCSR(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = _tocsr(_tocoo(A))
 SparseCSR(A::SparseCOO{Tv,Ti}) where {Tv,Ti} = _tocsr(A)
 SparseCSR(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocsr(_tocoo(_tocsc(A)))
 
+"""
+    SparseCSC(A)
+
+Create a sparse matrix with CSC format from the matrix `A`.
+The matrix `A` is allowed to be Matrix, SparseArrays.SparseMatrixCSC, SparseCSR, SparseCSC, SparseCOO and BlockCOO.
+"""
 SparseCSC(A::Matrix{Tv}) where {Tv} = _tocsc(A, Int)
 SparseCSC(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = _tocsc(_tocoo(A))
 SparseCSC(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = copy(A)
 SparseCSC(A::SparseCOO{Tv,Ti}) where {Tv,Ti} = _tocsc(A)
 SparseCSC(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocsc(A)
 
+"""
+    SparseCOO(A)
+
+Create a sparse matrix with COO format from the matrix `A`.
+The matrix `A` is allowed to be Matrix, SparseArrays.SparseMatrixCSC, SparseCSR, SparseCSC, SparseCOO and BlockCOO.
+"""
 SparseCOO(A::Matrix{Tv}) where {Tv} = _tocoo(A, Int)
 SparseCOO(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = _tocoo(A)
 SparseCOO(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = _tocoo(A)
 SparseCOO(A::SparseCOO{Tv,Ti}) where {Tv,Ti} = copy(A)
 SparseCOO(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti} = _tocoo(_tocsc(A))
 
-Matrix(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = _dense(A)
-Matrix(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = _dense(A)
-Matrix(A::SparseCOO{Tv,Ti}) where {Tv,Ti} = _dense(A)
+"""
+    Matrix(A)
+
+Create a dense matrix Matrix{Tv} from the matrix `A`.
+The matrix `A` is allowed to be SparseCSR, SparseCSC, SparseCOO and BlockCOO.
+"""
+Matrix(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = _todense(A)
+Matrix(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = _todense(A)
+Matrix(A::SparseCOO{Tv,Ti}) where {Tv,Ti} = _todense(A)
 
 SparseArrays.sparse(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = SparseArrays.sparse(_tocsc(_tocoo(A)))
 SparseArrays.sparse(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = SparseArrays.SparseMatrixCSC{Tv,Ti}(A.m, A.n, copy(A.colptr), copy(A.rowind), copy(A.val))
@@ -206,6 +283,10 @@ end
 
 ####
 
+function Base.zero(::Type{AbstractMatrix{Tv}}) where Tv
+    0
+end
+
 function Base.zero(A::SparseCSR{Tv,Ti}) where {Tv,Ti}
     SparseCSR(A.m, A.n, zero(A.val), A.rowptr, A.colind)
 end
@@ -221,6 +302,8 @@ end
 function Base.zero(A::SparseArrays.SparseMatrixCSC{Tv,Ti}) where {Tv,Ti}
     SparseArrays.SparseMatrixCSC{Tv,Ti}(A.m, A.n, A.colptr, A.rowval, zero(A.nzval))
 end
+
+###
 
 function _tocsr(A::Matrix{Tv}, ::Type{Ti})::SparseCSR{Tv,Ti} where {Tv, Ti}
     m, n = size(A)
@@ -361,7 +444,7 @@ function _tocoo(A::SparseCSC{Tv,Ti})::SparseCOO{Tv,Ti} where {Tv, Ti}
     SparseCOO(m, n, val, rowind, colind)
 end
 
-function _dense(A::SparseCSR{Tv,Ti})::Matrix{Tv} where {Tv, Ti}
+function _todense(A::SparseCSR{Tv,Ti})::Matrix{Tv} where {Tv, Ti}
     m, n = size(A)
     M = zeros(m,n)
     for i = 1:m
@@ -373,7 +456,7 @@ function _dense(A::SparseCSR{Tv,Ti})::Matrix{Tv} where {Tv, Ti}
     return M
 end
 
-function _dense(A::SparseCSC{Tv,Ti})::Matrix{Tv} where {Tv, Ti}
+function _todense(A::SparseCSC{Tv,Ti})::Matrix{Tv} where {Tv, Ti}
     m, n = size(A)
     M = zeros(m,n)
     for j = 1:n
@@ -385,7 +468,7 @@ function _dense(A::SparseCSC{Tv,Ti})::Matrix{Tv} where {Tv, Ti}
     return M
 end
 
-function _dense(A::SparseCOO{Tv,Ti})::Matrix{Tv} where {Tv, Ti}
+function _todense(A::SparseCOO{Tv,Ti})::Matrix{Tv} where {Tv, Ti}
     m, n = size(A)
     M = zeros(m,n)
     for z = 1:SparseArrays.nnz(A)
@@ -395,18 +478,3 @@ function _dense(A::SparseCOO{Tv,Ti})::Matrix{Tv} where {Tv, Ti}
     end
     return M
 end
-
-#################### Adjoint
-
-struct Adjoint{T <: AbstractSparseM}
-    parent::T
-end
-
-function Base.adjoint(A::AbstractSparseM{Tv,Ti}) where {Tv,Ti}
-    Adjoint(A)
-end
-
-function Base.adjoint(A::Adjoint{T}) where {T}
-    A.parent
-end
-

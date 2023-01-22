@@ -1,3 +1,5 @@
+import LinearAlgebra.BLAS
+
 ## overload LinearAlgebra.BLAS.gemm!
 
 # original interface

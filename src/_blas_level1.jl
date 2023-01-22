@@ -1,3 +1,6 @@
+import LinearAlgebra.BLAS
+export fill!
+
 ## overload LinearAlgebra.BLAS.scal!
 
 # blas level 1
@@ -5,6 +8,15 @@
 for Tv in [:Float64]
     @eval begin
         ## Matrix
+        """
+            fill!(x, A)
+        
+        Put a value x to all the elements of array of A.
+        
+        ### Output
+
+        The array A is directly changed and it is returned as on output.
+        """
         function fill!(a::Union{$Tv,Bool}, X::AbstractVector{$Tv})
             @. X = a
             X

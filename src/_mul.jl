@@ -1,4 +1,14 @@
-#################### CSR
+struct Adjoint{T <: AbstractSparseM}
+    parent::T
+end
+
+function Base.adjoint(A::AbstractSparseM{Tv,Ti}) where {Tv,Ti}
+    Adjoint(A)
+end
+
+function Base.adjoint(A::Adjoint{T}) where {T}
+    A.parent
+end
 
 for mat in (:SparseCSR, :SparseCSC, :SparseCOO)
     for elty in (:Float64,)
