@@ -132,6 +132,11 @@ SparseArrays.sparse(A::SparseCSR{Tv,Ti}) where {Tv,Ti} = SparseArrays.sparse(_to
 SparseArrays.sparse(A::SparseCSC{Tv,Ti}) where {Tv,Ti} = SparseArrays.SparseMatrixCSC{Tv,Ti}(A.m, A.n, copy(A.colptr), copy(A.rowind), copy(A.val))
 SparseArrays.sparse(A::SparseCOO{Tv,Ti}) where {Tv,Ti} = SparseArrays.sparse(_tocsc(A))
 
+"""
+    SparseCOO(m::Ti, n::Ti, elem::AbstractArray{Tuple{Ti,Ti,Tv},1}) where {Tv,Ti}
+
+Create a m-by-n sparse matrix with COO format from the list of tuple (rowindex, colindex, value).
+"""
 function SparseCOO(m::Ti, n::Ti, elem::AbstractArray{Tuple{Ti,Ti,Tv},1}) where {Tv,Ti}
     rowind = Vector{Ti}()
     colind = Vector{Ti}()

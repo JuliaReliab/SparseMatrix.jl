@@ -23,4 +23,5 @@ include("_spdiag.jl")
 
 include("_block.jl")
 
+include("_ell.jl")
 end

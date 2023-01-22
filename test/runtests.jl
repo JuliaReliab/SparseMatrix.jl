@@ -749,3 +749,101 @@ end
         end
     end
 end
+
+@testset "ell1" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A=Matrix(sprandn(m,n,p))
+        x0 = sparse(A)
+        x1=SparseCSR(A)
+        x2=SparseCSC(A)
+        x3=SparseCOO(A)
+        y0 = SparseELL1(x0)
+        for i = 1:y0.m
+            for z = 1:y0.k
+                if y0.idx[i,z] != 0
+                    j = y0.idx[i,z]
+                    @test A[i,j] == y0.val[i,z]
+                end
+            end
+        end
+        y1 = SparseELL1(x1)
+        for i = 1:y1.m
+            for z = 1:y1.k
+                if y1.idx[i,z] != 0
+                    j = y1.idx[i,z]
+                    @test A[i,j] == y1.val[i,z]
+                end
+            end
+        end
+        y2 = SparseELL1(x2)
+        for i = 1:y2.m
+            for z = 1:y2.k
+                if y2.idx[i,z] != 0
+                    j = y2.idx[i,z]
+                    @test A[i,j] == y2.val[i,z]
+                end
+            end
+        end
+        y3 = SparseELL1(x3)
+        for i = 1:y3.m
+            for z = 1:y3.k
+                if y3.idx[i,z] != 0
+                    j = y3.idx[i,z]
+                    @test A[i,j] == y3.val[i,z]
+                end
+            end
+        end       
+    end
+end
+
+@testset "ell2" begin
+    for i=1:100
+        m = rand(1:20)
+        n = rand(1:20)
+        p = rand()
+        A=Matrix(sprandn(m,n,p))
+        x0 = sparse(A)
+        x1=SparseCSR(A)
+        x2=SparseCSC(A)
+        x3=SparseCOO(A)
+        y0 = SparseELL2(x0)
+        for j = 1:y0.n
+            for z = 1:y0.k
+                if y0.idx[j,z] != 0
+                    i = y0.idx[j,z]
+                    @test A[i,j] == y0.val[j,z]
+                end
+            end
+        end
+        y1 = SparseELL2(x1)
+        for j = 1:y1.n
+            for z = 1:y1.k
+                if y1.idx[j,z] != 0
+                    i = y1.idx[j,z]
+                    @test A[i,j] == y1.val[j,z]
+                end
+            end
+        end
+        y2 = SparseELL2(x2)
+        for j = 1:y2.n
+            for z = 1:y2.k
+                if y2.idx[j,z] != 0
+                    i = y2.idx[j,z]
+                    @test A[i,j] == y2.val[j,z]
+                end
+            end
+        end
+        y3 = SparseELL2(x3)
+        for j = 1:y3.n
+            for z = 1:y3.k
+                if y3.idx[j,z] != 0
+                    i = y3.idx[j,z]
+                    @test A[i,j] == y3.val[j,z]
+                end
+            end
+        end
+    end
+end

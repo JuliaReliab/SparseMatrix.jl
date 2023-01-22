@@ -1,3 +1,7 @@
+# 0.3.5
+
+- Add ELL formats
+
 # 0.3.4
 
 - Define the function BlockCOO to create BlockCOO directly.
